@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "408539433649",
+    "firebase_url": "https://earncash-61c1c-default-rtdb.firebaseio.com",
+    "project_id": "earncash-61c1c",
+    "storage_bucket": "earncash-61c1c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:408539433649:android:339fcc70c29807a19cf090",
+        "android_client_info": {
+          "package_name": "com.hanif.earncash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "408539433649-6drvki2qm2otr05csveachqu16agfeem.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hanif.earncash",
+            "certificate_hash": "d7be9dea319124233f2ced538c42fbf9474fc91f"
+          }
+        },
+        {
+          "client_id": "408539433649-mb12qlbret7sv9k5b7hqbpae89r6mv8h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1tcgDLTxGtpa2otdBQwC8UPHOOeKy5qY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "408539433649-mb12qlbret7sv9k5b7hqbpae89r6mv8h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
