@@ -15,13 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.hanif.earncash.DaO.NonSubAppDao
-import com.hanif.earncash.Utils.CallFunctions.Companion.fireObject
+import com.hanif.earncash.Utils.ConfirmationDialogues
 
 
 @Composable
@@ -31,6 +32,12 @@ fun FiverOrder() {
     var icon by remember { mutableStateOf("") }
     var packageName by remember { mutableStateOf("") }
     var subscriber by remember { mutableStateOf("") }
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+    val scope = rememberCoroutineScope()
+    var DialogueText = ""
+
 
     Column(
         modifier = Modifier
@@ -85,10 +92,19 @@ fun FiverOrder() {
                 subscriber = subscriber.toIntOrNull() ?: 0 // Handle potential non-integer input
 
             )
-            fireObject.storeFiverOrder(appOrder)
+//            AirtableApiClient().storeData(appOrder, scope)
 
-        }) {
+       }){
+
             Text("Submit")
         }
+    }
+    if (showDialog){
+        ConfirmationDialogues(DialogueText, onYesClicked = {
+            showDialog = false
+        }, onDismissRequest = {
+            showDialog = false
+        })
+
     }
 }

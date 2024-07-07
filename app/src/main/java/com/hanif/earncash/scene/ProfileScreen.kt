@@ -57,7 +57,7 @@ fun ProfileScreen(navController: NavHostController) {
         fireObject.getUserDetails().collect{
             user = it
         }
-        balance=fireObject.getEanring()
+        balance= 0
     }
     Column(
         modifier = Modifier
@@ -151,7 +151,11 @@ fun ProfileScreen(navController: NavHostController) {
             }
 
             OutlinedButton(
-                onClick = { editInfo = true },
+                onClick = {
+//                    editInfo = true
+//                    AirtableApiClient().fetchRecords()
+                          }
+                ,
             ) {
                 Text(text = "Edit")
             }

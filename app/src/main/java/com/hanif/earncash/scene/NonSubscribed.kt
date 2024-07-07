@@ -20,17 +20,16 @@ import com.hanif.earncash.DaO.NonSubAppDao
 import com.hanif.earncash.Utils.CallFunctions.Companion.fireObject
 import com.hanif.earncash.Utils.ConfirmationDialogues
 
-
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun NonsubsCribed(context: Context) {
 
-    var listedApp by remember { mutableStateOf<List<NonSubAppDao>?>(null) }
+    var nonSubApps by remember { mutableStateOf<List<NonSubAppDao>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
-        fireObject.getListedApps().collect { apps ->
-            listedApp = apps
-        }
+
     }
 
     var showDialogue by remember {
@@ -40,16 +39,13 @@ fun NonsubsCribed(context: Context) {
     Column(modifier = Modifier.padding(10.dp, 40.dp, 10.dp, 20.dp)) {
         Text(text = "এপ এর উপর ক্লিক করুন")
         LazyColumn {
-            listedApp?.let { apps ->
-                items(apps) {dao->
-                    AppItem(appInfo = dao) { packageName ->
-                        val isDone = fireObject.storeSubApp(AppDao(dao.name, dao.url, dao.icon, dao.packageName, 0,0))
-                        if (isDone){
-                            showDialogue = true
-                    }
+            items(nonSubApps) { dao->
+                AppItem(appInfo = dao) { packageName ->
+                    val isDone = fireObject.storeSubApp(AppDao(dao.name, dao.url, dao.icon, dao.packageName, 0,0))
+                    if (isDone){
+                        showDialogue = true
                 }
             }
-
         }
     }
     if (showDialogue){

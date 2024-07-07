@@ -43,6 +43,8 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
+
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -74,4 +76,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.coil.compose)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
 }

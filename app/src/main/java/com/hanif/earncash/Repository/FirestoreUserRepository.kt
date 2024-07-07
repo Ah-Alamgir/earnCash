@@ -18,9 +18,6 @@ class FirestoreUserRepository : UserRepository {
         dao.storeFiverOrder(app)
     }
 
-    override suspend fun addTestedDates(appName: ArrayList<String>) {
-        dao.addTestedDates(appName)
-    }
 
     override suspend fun getUserDetails(): Flow<UserDao?> {
         return dao.getUserDetails()
@@ -38,11 +35,5 @@ class FirestoreUserRepository : UserRepository {
         return dao.getListedApps()
     }
 
-    override fun storEanring(amount: Int) {
-        dao.storEanring(amount)
-    }
 
-    override suspend fun getEanring(): Int {
-        return dao.getEanring()
-    }
 }

@@ -24,9 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.hanif.earncash.DaO.AppDao
 import com.hanif.earncash.DaO.AppUsage
-import com.hanif.earncash.Utils.CallFunctions.Companion.fireObject
 import com.hanif.earncash.Utils.FetchAppUses.fetchAppUsage
-import kotlinx.coroutines.launch
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -38,10 +36,7 @@ fun AppUsageScreen(appListState: List<AppDao>) {
         items(appListState) {
             val time = fetchAppUsage(context, it.packageName)
             val list = AppUsageItem(AppUsage(it.name, it.icon, time))
-            scope.launch {
-                fireObject.addTestedDates(list)
 
-            }
         }
     }
 

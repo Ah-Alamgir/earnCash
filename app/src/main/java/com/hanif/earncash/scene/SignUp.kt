@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.hanif.earncash.R
 import com.hanif.earncash.Utils.CallFunctions.Companion.fireObject
+import com.hanif.earncash.Utils.CallFunctions.Companion.realTimeObject
 
 @Composable
 fun SignUP(navController: NavHostController) {
@@ -45,7 +46,7 @@ fun SignUP(navController: NavHostController) {
         ) {
             EditBoxes {email->
                 fireObject.email = email
-                fireObject.storEanring(0)
+                realTimeObject.storeEarningPoints(email, 0)
                 navController.navigate("home")
             }
         }

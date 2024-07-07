@@ -14,7 +14,7 @@ import java.util.Calendar
 import java.util.Locale
 
 
-class FirestoreUserDao() {
+class FirestoreUserDao {
     var point: Int = 0
     private val db = Firebase.firestore
     private val userDetailsCollection = db.collection("user_details")
@@ -36,31 +36,16 @@ class FirestoreUserDao() {
 
 
 
+
+
+
+
+
+
     fun getCurrentDate(): String {
         val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         return dateFormat.format(calendar.time)
-    }
-
-
-
-    data class complete(val text: String) {
-        constructor() : this("a")
-    }
-
-    suspend fun addTestedDates(appName: ArrayList<String>){
-        var points = 0
-        appName.remove("a")
-        appName.forEach { appNameItem ->
-            val ref = appTester.document(appNameItem).collection(email).document(getCurrentDate())
-            val check = ref.get().await()
-
-            if (check.exists()) {
-                ref.set(complete("a")).await() // Use await() here
-                storEanring(points+10)
-            }
-        }
-
     }
 
 
@@ -119,21 +104,5 @@ class FirestoreUserDao() {
         emit(appList)
     }
 
-
-    data class earNing(val amount: Int) {
-        constructor() : this(0)
-    }
-
-    fun storEanring(amount: Int) {
-        userEarningCollection.document(email).set(earNing(amount))
-    }
-
-    suspend fun getEanring():Int {
-        val query = userEarningCollection.document(email).get().await()
-        val query1 = query.toObject(earNing::class.java)
-        val point= query1?.amount ?: 0
-//        Log.d("luckey", point.toString())
-        return point
-    }
 
 }
