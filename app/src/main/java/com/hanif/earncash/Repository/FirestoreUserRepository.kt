@@ -32,7 +32,7 @@ class FirestoreUserRepository : UserRepository {
     }
 
     override suspend fun getListedApps(): Flow<List<NonSubAppDao>?> {
-        return dao.getListedApps()
+        return dao.getListedApps(scope)
     }
 
 

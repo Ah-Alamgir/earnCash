@@ -28,13 +28,15 @@ import java.io.IOException
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun NonsubsCribed(args:Route.NonSubscribed) {
+fun NonsubsCribed(args: Route.NonSubscribed) {
 
-    var nonSubApps by remember { mutableStateOf<List<NonSubAppDao>>(emptyList()) }
-    val Applist = AirtableApiClient()
-    LaunchedEffect(Unit) {
+    var nonSubApps by remember { mutableStateOf<List<NonSubAppDao>>(emptyList()) } // Initialize as empty list
 
+    LaunchedEffect(Unit) { // Launch coroutine when composable enters composition
+        nonSubApps= fireObject.getListedApps()
     }
+    val Applist = AirtableApiClient()
+
 
     var showDialogue by remember {
         mutableStateOf(false)
@@ -43,9 +45,13 @@ fun NonsubsCribed(args:Route.NonSubscribed) {
     Column(modifier = Modifier.padding(10.dp, 40.dp, 10.dp, 20.dp)) {
         Text(text = "এপ এর উপর ক্লিক করুন")
         LazyColumn {
-            items(nonSubApps) { dao->
+            items(nonSubApps) { dao ->
                 AppItem(appInfo = dao) { packageName ->
-                    val isDone = fireObject.storeSubApp(AppDao(dao.name, dao.url, dao.icon, dao.packageName, 0,0))
+                    val isDone = fireObject.storeSubApp(
+                        AppDao(
+                            dao.name, dao.url, dao.icon, dao.packageName, 0, 0
+                        )
+                    )
                     Applist.storeStrings(args.emaail, dao.name, object : Callback {
                         override fun onFailure(call: Call, e: IOException) {
                             TODO("Not yet implemented")
@@ -56,20 +62,19 @@ fun NonsubsCribed(args:Route.NonSubscribed) {
                         }
 
                     })
-                    if (isDone){
+                    if (isDone) {
                         showDialogue = true
+                    }
                 }
             }
         }
-    }
-    if (showDialogue){
-        ConfirmationDialogues("এখন থেকে এপটি টেস্ট করতে পারবেন", onYesClicked = {
-            showDialogue = false
-        },
-            onDismissRequest = {
+        if (showDialogue) {
+            ConfirmationDialogues("এখন থেকে এপটি টেস্ট করতে পারবেন", onYesClicked = {
+                showDialogue = false
+            }, onDismissRequest = {
                 showDialogue = false
             })
-    }
+        }
     }
 }
 

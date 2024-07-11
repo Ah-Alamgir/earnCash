@@ -9,9 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.hanif.earncash.DaO.Route
 import com.hanif.earncash.Remote.sharePref
 import com.hanif.earncash.Utils.CallFunctions.Companion.fireObject
+import com.hanif.earncash.scene.HomeScene
+import com.hanif.earncash.scene.NonsubsCribed
 import com.hanif.earncash.ui.theme.EarnCashTheme
 
 class MainActivity : ComponentActivity() {
@@ -42,7 +45,12 @@ fun Navigation(context: Context, email: String) {
 
     NavHost(navController = navController, startDestination = destination) {
         composable<Route.HomeScene> {
-            navController.navigate(Route.P)
+            HomeScene(args = Route.HomeScene(email)) {
+                navController.navigate(Route.NonSubscribed("jakir"))
+            }
+        }
+        composable<Route.NonSubscribed> {
+            NonsubsCribed(args = it.toRoute())
         }
 
     }
