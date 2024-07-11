@@ -33,8 +33,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.hanif.earncash.DaO.AppDao
+import com.hanif.earncash.DaO.Route
 import com.hanif.earncash.R
 import com.hanif.earncash.Remote.RealtimeDatabaseRepository
 import com.hanif.earncash.Remote.sharePref
@@ -48,18 +48,18 @@ import java.io.IOException
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun HomeScene(navController: NavController, email: String) {
+fun HomeScene(args:Route.HomeScene, changeScene: (String)-> Unit) {
     var subscribedApps by remember { mutableStateOf<List<AppDao>?>(null) }
     var dataLoaded by remember { mutableStateOf(false) }
     val earnClass = RealtimeDatabaseRepository()
-    val earningsFlow = earnClass.getEarningPointsFlow(email) // Get the Flow
+    val earningsFlow = earnClass.getEarningPointsFlow(args.email) // Get the Flow
     val earning by earningsFlow.collectAsState(initial = 0)
     val context = LocalContext.current
     HandlePermission(context)
 
 
 
-    if (email == "no") {
+    if (args.email == "no") {
         sharePref().getEmail(context)
     }
     LaunchedEffect(key1 = dataLoaded) {
@@ -108,7 +108,7 @@ fun HomeScene(navController: NavController, email: String) {
                 modifier = Modifier
                     .size(40.dp)
                     .clickable {
-                        navController.navigate("profile")
+
                     })
         }
 
@@ -125,7 +125,7 @@ fun HomeScene(navController: NavController, email: String) {
                     modifier = Modifier
                         .size(40.dp)
                         .clickable {
-                            navController.navigate("nonSubscribed")
+                            changeScene(args.email)
                         })
             }
             SubcribedApp(subscribedApps!!)

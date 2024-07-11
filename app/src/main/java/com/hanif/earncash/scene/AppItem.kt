@@ -16,14 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.hanif.earncash.DaO.NonSubAppDao
 
 @Composable
 fun AppItem(appInfo: NonSubAppDao, onAppclick:(String)->Unit) {
-    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
