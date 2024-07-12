@@ -81,4 +81,11 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.okhttp)
     implementation(libs.kotlinx.serialization.json)
+
+
+
+    implementation(platform("io.github.jan-tennert.supabase:bom:2.5.3"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.ktor:ktor-client-android:2.3.12")
+    testImplementation("org.mockito:mockito-core:4.8.0")
 }

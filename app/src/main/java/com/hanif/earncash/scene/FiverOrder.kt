@@ -102,8 +102,6 @@ fun FiverOrder() {
     if (showDialog){
         ConfirmationDialogues(DialogueText, onYesClicked = {
             showDialog = false
-        }, onDismissRequest = {
-            showDialog = false
         })
 
     }

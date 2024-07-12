@@ -6,7 +6,6 @@ import com.google.firebase.ktx.Firebase
 import com.hanif.earncash.DaO.AppDao
 import com.hanif.earncash.DaO.NonSubAppDao
 import com.hanif.earncash.DaO.UserDao
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -98,11 +97,11 @@ class FirestoreUserDao {
     }
 
 
-    fun getListedApps(scope: CoroutineScope): List<NonSubAppDao> {
+    suspend fun getListedApps(): Flow<List<NonSubAppDao>?> = flow {
         val userAppsCollection = db.collection("OrderFromFiver")
         val querySnapshot = userAppsCollection.get().await()
         val appList = querySnapshot.toObjects(NonSubAppDao::class.java)
-        return  appList
+        emit(appList)
     }
 
 

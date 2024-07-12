@@ -17,13 +17,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import com.hanif.earncash.DaO.Route
 import com.hanif.earncash.R
 import com.hanif.earncash.Utils.CallFunctions.Companion.fireObject
 import com.hanif.earncash.Utils.CallFunctions.Companion.realTimeObject
 
 @Composable
-fun SignUP(navController: NavHostController) {
+fun SignUP(onClick:(Route)->Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -47,7 +47,7 @@ fun SignUP(navController: NavHostController) {
             EditBoxes {email->
                 fireObject.email = email
                 realTimeObject.storeEarningPoints(email, 0)
-                navController.navigate("home")
+                onClick(Route.HomeScene(email))
             }
         }
     }

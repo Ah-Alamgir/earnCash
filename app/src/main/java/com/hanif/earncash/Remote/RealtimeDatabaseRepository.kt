@@ -22,11 +22,11 @@ class RealtimeDatabaseRepository {
         earningsRef.child(sanitizedEmail).setValue(points)
     }
 
-    fun getEarningPointsFlow(email: String): Flow<Int> = callbackFlow {
+    fun getEarning(email: String): Flow<String> = callbackFlow {
         val sanitizedEmail = sanitizeEmailForFirebaseKey(email)
         val listener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val points = snapshot.getValue(Int::class.java) ?: 0
+                val points = snapshot.value.toString()
                 trySend(points) // Emit the new points value
             }
 

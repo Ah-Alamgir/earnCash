@@ -1,6 +1,6 @@
 package com.hanif.earncash
 
-import android.content.Context
+import ProfileScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,7 +15,9 @@ import com.hanif.earncash.Remote.sharePref
 import com.hanif.earncash.Utils.CallFunctions.Companion.fireObject
 import com.hanif.earncash.scene.HomeScene
 import com.hanif.earncash.scene.NonsubsCribed
+import com.hanif.earncash.scene.SignUP
 import com.hanif.earncash.ui.theme.EarnCashTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,19 +26,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             EarnCashTheme {
                 val email = sharePref().getEmail(this)
-                Navigation(this, email)
+                Navigation(email)
             }
         }
     }
-
 
 }
 
 
 @Composable
-fun Navigation(context: Context, email: String) {
+fun Navigation(email: String) {
     val navController = rememberNavController()
-    var destination:Route = Route.HomeScene(email)
+    var destination: Route = Route.HomeScene(email)
     if (email == "no") {
         destination = Route.SignUP
     } else {
@@ -46,13 +47,20 @@ fun Navigation(context: Context, email: String) {
     NavHost(navController = navController, startDestination = destination) {
         composable<Route.HomeScene> {
             HomeScene(args = Route.HomeScene(email)) {
-                navController.navigate(Route.NonSubscribed("jakir"))
+                navController.navigate(it)
             }
         }
         composable<Route.NonSubscribed> {
             NonsubsCribed(args = it.toRoute())
         }
-
+        composable<Route.ProfileScreen> {
+            ProfileScreen(args = Route.ProfileScreen(email, "0"))
+        }
+        composable<Route.SignUP> {
+            SignUP{
+                navController.navigate(it)
+            }
+        }
     }
 }
 

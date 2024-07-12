@@ -1,5 +1,6 @@
 package com.hanif.earncash.scene
 
+import AirtableApiClient
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,10 +33,11 @@ import com.hanif.earncash.Utils.FetchAppUses.fetchAppUsage
 fun AppUsageScreen(appListState: List<AppDao>) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val client  = AirtableApiClient()
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(appListState) {
             val time = fetchAppUsage(context, it.packageName)
-            val list = AppUsageItem(AppUsage(it.name, it.icon, time))
+            AppUsageItem(AppUsage(it.name, it.icon, time,), client)
 
         }
     }
@@ -44,8 +46,7 @@ fun AppUsageScreen(appListState: List<AppDao>) {
 
 
 @Composable
-fun AppUsageItem(appUsage: AppUsage): ArrayList<String> {
-    var checkCompletion = arrayListOf("a")
+fun AppUsageItem(appUsage: AppUsage, client: AirtableApiClient) {
     OutlinedCard {
         Row(
             modifier = Modifier
@@ -66,8 +67,9 @@ fun AppUsageItem(appUsage: AppUsage): ArrayList<String> {
                 Text(text = appUsage.appName)
                 Spacer(modifier = Modifier.height(8.dp))
                 if (appUsage.usageTimeInSeconds >= 2.0) {
+//                    client.appTested(appUsage.appName)
                     LinearProgressIndicator(progress = { 2.0f })
-                    checkCompletion.add(appUsage.appName)
+
                 } else {
                     val scaledProgress = appUsage.usageTimeInSeconds / 2.0f
                     LinearProgressIndicator(
@@ -82,5 +84,4 @@ fun AppUsageItem(appUsage: AppUsage): ArrayList<String> {
 
     }
     Spacer(modifier = Modifier.height(3.dp))
-    return checkCompletion
 }
