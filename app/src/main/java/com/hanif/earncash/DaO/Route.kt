@@ -8,13 +8,13 @@ sealed class Route{
     @Serializable
     data class HomeScene(val email: String) : Route()
     @Serializable
-    data class NonSubscribed(val emaail: String) : Route()
+    data class NonSubscribed(val email: String) : Route()
     @Serializable
-    data class FiverOrder(val emaail: String) : Route()
+    data class FiverOrder(val email: String) : Route()
     @Serializable
     data object SubcribedApp : Route()
     @Serializable
-    data object ProfileScreen : Route()
+    data class ProfileScreen(val email: String, val earning:String) : Route()
     @Serializable
     data object SignUP : Route()
 

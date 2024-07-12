@@ -2,6 +2,7 @@ package com.hanif.earncash.scene
 
 import AirtableApiClient
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.hanif.earncash.DaO.AppDao
 import com.hanif.earncash.DaO.NonSubAppDao
 import com.hanif.earncash.DaO.Route
 import com.hanif.earncash.Utils.CallFunctions.Companion.fireObject
@@ -32,9 +32,14 @@ fun NonsubsCribed(args: Route.NonSubscribed) {
 
     var nonSubApps by remember { mutableStateOf<List<NonSubAppDao>>(emptyList()) } // Initialize as empty list
 
-    LaunchedEffect(Unit) { // Launch coroutine when composable enters composition
-        nonSubApps= fireObject.getListedApps()
+    LaunchedEffect(Unit) {
+        fireObject.getListedApps().collect { apps ->
+            if (apps != null) {
+                nonSubApps = apps
+            }
+        }
     }
+
     val Applist = AirtableApiClient()
 
 
@@ -47,31 +52,32 @@ fun NonsubsCribed(args: Route.NonSubscribed) {
         LazyColumn {
             items(nonSubApps) { dao ->
                 AppItem(appInfo = dao) { packageName ->
-                    val isDone = fireObject.storeSubApp(
-                        AppDao(
-                            dao.name, dao.url, dao.icon, dao.packageName, 0, 0
-                        )
-                    )
-                    Applist.storeStrings(args.emaail, dao.name, object : Callback {
+//                    val isDone = fireObject.storeSubApp(
+//                        AppDao(
+//                            dao.name, dao.url, dao.icon, dao.packageName, 0, 0
+//                        )
+//                    )
+                    Applist.storeStrings(args.email, dao.name, object : Callback {
                         override fun onFailure(call: Call, e: IOException) {
                             TODO("Not yet implemented")
                         }
 
                         override fun onResponse(call: Call, response: Response) {
-                            TODO("Not yet implemented")
+                            Log.d("luckey", dao.name)
+
+                            Log.d("luckey", response.code.toString())
+                            if(response.code == 200){
+                                showDialogue = true
+                            }
                         }
 
                     })
-                    if (isDone) {
-                        showDialogue = true
-                    }
+
                 }
             }
         }
         if (showDialogue) {
             ConfirmationDialogues("এখন থেকে এপটি টেস্ট করতে পারবেন", onYesClicked = {
-                showDialogue = false
-            }, onDismissRequest = {
                 showDialogue = false
             })
         }

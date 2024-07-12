@@ -29,7 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
+import com.hanif.earncash.DaO.Route
 import com.hanif.earncash.DaO.UserDao
 import com.hanif.earncash.R
 import com.hanif.earncash.Utils.CallFunctions.Companion.fireObject
@@ -39,26 +39,23 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun ProfileScreen(navController: NavHostController) {
+fun ProfileScreen(args: Route.ProfileScreen) {
     var editInfo by remember {
         mutableStateOf(false)
-    }
-
-    var balance by remember {
-        mutableStateOf(0)
     }
 
 
     var user by remember {
         mutableStateOf<UserDao?>(null)
     }
+
     val scope = rememberCoroutineScope()
     scope.launch {
         fireObject.getUserDetails().collect{
             user = it
         }
-        balance= 0
     }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -126,7 +123,7 @@ fun ProfileScreen(navController: NavHostController) {
                 // Balance
                 Row(modifier = Modifier.align(Alignment.End)) {
                     Text(
-                        text = balance.toString(),
+                        text =args.earning ,
                         fontWeight = FontWeight.Bold,
                         fontSize = 28.sp,
                         color = Color.White,
@@ -144,7 +141,7 @@ fun ProfileScreen(navController: NavHostController) {
         ) {
             OutlinedButton(
                 onClick = {
-                    navController.navigate("order")
+//                    navController.navigate("order")
                 },
             ) {
                 Text(text = "Get Paid")

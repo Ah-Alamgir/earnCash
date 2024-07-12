@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -21,10 +20,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,22 +40,24 @@ import com.hanif.earncash.Remote.sharePref
 import com.hanif.earncash.Utils.CallFunctions.Companion.fireObject
 import com.hanif.earncash.Utils.ConfirmationDialogues
 import com.hanif.earncash.Utils.Permission
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Response
-import java.io.IOException
+import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun HomeScene(args:Route.HomeScene, changeScene: (String)-> Unit) {
+fun HomeScene(args:Route.HomeScene, onClick: (Route)-> Unit) {
     var subscribedApps by remember { mutableStateOf<List<AppDao>?>(null) }
     var dataLoaded by remember { mutableStateOf(false) }
     val earnClass = RealtimeDatabaseRepository()
-    val earningsFlow = earnClass.getEarningPointsFlow(args.email) // Get the Flow
-    val earning by earningsFlow.collectAsState(initial = 0)
+    var earning by remember {
+        mutableStateOf("0")
+    }
     val context = LocalContext.current
     HandlePermission(context)
 
+    val scope  = rememberCoroutineScope()
+    scope.launch { earnClass.getEarning(args.email).collect {points->
+        earning = points
+    } }
 
 
     if (args.email == "no") {
@@ -70,23 +71,14 @@ fun HomeScene(args:Route.HomeScene, changeScene: (String)-> Unit) {
             }
             dataLoaded = true
         }
-        AirtableApiClient().storeStrings("Sandi","fldsyaVUJYAFosDcB", object :  Callback{
-            override fun onFailure(call: Call, e: IOException) {
-                Log.d("luckey", e.cause.toString())
-
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                Log.d("luckey", response.code.toString())
-            }
-
-        })
 
 
     }
 
 
 
+    val airtale = AirtableApiClient()
+    airtale.createField()
 
 
     Column(modifier = Modifier.padding(10.dp, 30.dp, 10.dp, 20.dp)) {
@@ -108,7 +100,7 @@ fun HomeScene(args:Route.HomeScene, changeScene: (String)-> Unit) {
                 modifier = Modifier
                     .size(40.dp)
                     .clickable {
-
+                        onClick(Route.ProfileScreen(args.email, earning.toString()))
                     })
         }
 
@@ -125,7 +117,7 @@ fun HomeScene(args:Route.HomeScene, changeScene: (String)-> Unit) {
                     modifier = Modifier
                         .size(40.dp)
                         .clickable {
-                            changeScene(args.email)
+                            onClick(Route.NonSubscribed(email = args.email))
                         })
             }
             SubcribedApp(subscribedApps!!)
@@ -157,8 +149,6 @@ fun HandlePermission(context: Context) {
         ConfirmationDialogues("পারমিশন দিন", onYesClicked = {
             val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
             launcher.launch(intent)
-        }, onDismissRequest = {
-            showDialogue = false
         })
     }
 }
