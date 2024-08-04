@@ -1,6 +1,10 @@
+
 import android.util.Log
 import com.google.gson.Gson
 import com.hanif.earncash.Airtable.DataClass.CheckAppList
+import com.hanif.earncash.Airtable.DataClass.CheckedApp
+import com.hanif.earncash.DaO.ApiResponse
+import com.hanif.earncash.DaO.NonSubAppDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.Call
@@ -20,8 +24,23 @@ class AirtableApiClient {
     private val apiKey =
         "pat6WUU8zXl4AIwVM.2e2888a14525b603038a0d7b973c612ae3d6ab755cc3f25b18bec1423110319e"
     private val client = OkHttpClient()
-    fun storeStrings(string: String, fieldId: String, callback: Callback) {
-        val data = mapOf("fields" to mapOf(fieldId to string))
+
+
+    fun convertToText(){
+        val facebookApp = NonSubAppDao(
+            "Facebook",
+            "https://www.facebook.com",
+            "https://example.com/facebook_icon.png",
+            "com.facebook.katana",
+            2,
+            "recjrWON9pGG90vtH"
+        )
+        val json = Gson().toJson(facebookApp)
+        println(json)
+    }
+
+    fun storeStrings(apName: String, fieldId: String, callback: Callback) {
+        val data = mapOf("fields" to mapOf(fieldId to apName))
         val json = Gson().toJson(data)
 
         val mediaType = "application/json".toMediaTypeOrNull()
@@ -38,7 +57,9 @@ class AirtableApiClient {
     }
 
 
-    fun getStrings(filter: String): Flow<CheckAppList> = flow {
+    data class ApiError(override val message: String): Throwable(message)
+
+    fun getCheckedApp(filter: String): Flow<Result<CheckedApp>> = flow {
         val request = Request.Builder()
             .url(baseUrl + filter)
             .get()
@@ -46,29 +67,108 @@ class AirtableApiClient {
             .header("Content-Type", "application/json")
             .build()
 
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                println("failed")
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    response.body?.let {
-                        val jsonResponse = it.string()
-                        println(jsonResponse)
-                        val gson = Gson()
-                        val airtableData = gson.fromJson(jsonResponse, CheckAppList::class.java)
-
-                        airtableData.records.forEach { record ->
-                            println(record.toString())
-                        }
-                    }
-                } else {
-                    println(response.message)
-                }
-            }
-        })
+         try {
+             val response = client.newCall(request).execute() // Execute the request synchronously
+             if (response.isSuccessful) {
+                 response.body?.let {
+                     val jsonResponse = it.string()
+                     val gson = Gson()
+                     val airtableData = gson.fromJson(jsonResponse, CheckAppList::class.java)
+                     airtableData.records.forEach {record->
+                         record.fields.forEach{fields->
+                             if (fields.key == "Date" && fields.value== "2024-07-11"){
+                                emit(Result.success(record))
+                             }else{
+                                 emit(Result.failure(ApiError("আজ এপ টেস্ট করেন নি  ")))
+                             }
+                         }
+                     }
+                 } ?: emit(Result.failure(ApiError("Empty response body."))) // Emit null if body is empty
+             } else {
+                 emit(Result.failure(ApiError("কিছু পাওয়া যায়নি"))) // Emit null on unsuccessful response
+             }
+         } catch (e: IOException) {
+             emit(Result.failure(ApiError("আপনার নেটওয়ার্ক কানেকশন  চেক করুন ")))
+         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /// for the nonsubscribed scene
+
+    fun getListedApps():Flow<Result<List<NonSubAppDao>>> = flow {
+        val request = Request.Builder()
+            .url("https://api.airtable.com/v0/appCOC2vF3Cu4auYI/Applist")
+            .get()
+            .header("Authorization", "Bearer $apiKey")
+            .header("Content-Type", "application/json")
+            .build()
+
+        try {
+            val response = client.newCall(request).execute() // Execute the request synchronously
+            if (response.isSuccessful) {
+                response.body?.let {
+                    val jsonResponse = it.string()
+                    val apiResponse = Gson().fromJson(jsonResponse, ApiResponse::class.java)
+                    val nonSubAppList = mutableListOf<NonSubAppDao>()
+
+                    for (record in apiResponse.records) {
+                        val appJson = record.fields.OrderdApps
+                        val app = Gson().fromJson(appJson, NonSubAppDao::class.java)
+                        nonSubAppList.add(app)
+                    }
+
+                    println(nonSubAppList)
+                    emit(Result.success(nonSubAppList))
+
+
+                }  ?: emit(Result.failure(ApiError("Empty response body."))) // Emit null if body is empty
+            } else {
+                emit(Result.failure(ApiError("কিছু পাওয়া যায়নি"))) // Emit null on unsuccessful response
+            }
+        } catch (e: IOException) {
+            emit(Result.failure(ApiError("আপনার নেটওয়ার্ক কানেকশন  চেক করুন ")))
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     private fun convertListToJson(stringList: List<String>): String {

@@ -89,20 +89,17 @@ fun FiverOrder() {
                 url = url,
                 icon = icon,
                 packageName = packageName,
-                subscriber = subscriber.toIntOrNull() ?: 0 // Handle potential non-integer input
+                subscriber = subscriber.toIntOrNull() ?: 0,
+                ""// Handle potential non-integer input
 
             )
 //            AirtableApiClient().storeData(appOrder, scope)
 
        }){
-
             Text("Submit")
         }
     }
     if (showDialog){
-        ConfirmationDialogues(DialogueText, onYesClicked = {
-            showDialog = false
-        })
-
+        ConfirmationDialogues(DialogueText)
     }
 }

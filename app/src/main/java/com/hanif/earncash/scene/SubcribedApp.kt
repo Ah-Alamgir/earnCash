@@ -23,7 +23,7 @@ val context = LocalContext.current
         LazyColumn {
             items(appListState) { appDao ->
                 AppItem(
-                    NonSubAppDao(appDao.name, appDao.url, appDao.icon, appDao.packageName, 0)
+                    NonSubAppDao(appDao.name, appDao.url, appDao.icon, appDao.packageName, 0,"")
                 ) { packageName ->
                         context.startActivity(
                             Intent(
