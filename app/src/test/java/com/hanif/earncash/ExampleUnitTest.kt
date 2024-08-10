@@ -20,7 +20,6 @@ class ExampleUnitTest {
         val baseUrl = "https://api.airtable.com/v0/appCOC2vF3Cu4auYI/Apps"
         val apiKey = "pat6WUU8zXl4AIwVM.2e2888a14525b603038a0d7b973c612ae3d6ab755cc3f25b18bec1423110319e"
         val client = OkHttpClient()
-        println("here")
 
 
         val request = Request.Builder()

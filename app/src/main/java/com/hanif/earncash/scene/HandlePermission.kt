@@ -19,7 +19,6 @@ import androidx.compose.runtime.setValue
 
 @Composable
 fun HandlePermission(context: Context) {
-    println("we are here")
     var showDialogue by remember { mutableStateOf(false) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()

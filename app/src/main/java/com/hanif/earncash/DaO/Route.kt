@@ -17,5 +17,7 @@ sealed class Route{
     data class ProfileScreen(val email: String, val earning:String) : Route()
     @Serializable
     data object SignUP : Route()
+    @Serializable
+    data object airtTableView : Route()
 
 }

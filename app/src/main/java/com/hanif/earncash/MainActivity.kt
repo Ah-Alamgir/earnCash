@@ -13,6 +13,7 @@ import androidx.navigation.toRoute
 import com.hanif.earncash.DaO.Route
 import com.hanif.earncash.Remote.sharePref
 import com.hanif.earncash.Utils.CallFunctions.Companion.fireObject
+import com.hanif.earncash.scene.AirtableEmbedView
 import com.hanif.earncash.scene.HomeScene
 import com.hanif.earncash.scene.NonsubsCribed
 import com.hanif.earncash.scene.SignUP
@@ -60,6 +61,9 @@ fun Navigation(email: String) {
             SignUP{
                 navController.navigate(it)
             }
+        }
+        composable<Route.airtTableView> {
+            AirtableEmbedView()
         }
     }
 }

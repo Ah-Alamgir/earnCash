@@ -21,13 +21,13 @@ import coil.compose.AsyncImage
 import com.hanif.earncash.DaO.NonSubAppDao
 
 @Composable
-fun AppItem(appInfo: NonSubAppDao, onAppclick:(String)->Unit) {
+fun AppItem(appInfo: NonSubAppDao, onAppclick: (NonSubAppDao)->Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 3.dp)
             .clickable {
-                onAppclick(appInfo.packageName)
+                onAppclick(appInfo)
             }
     ) {
         Row(

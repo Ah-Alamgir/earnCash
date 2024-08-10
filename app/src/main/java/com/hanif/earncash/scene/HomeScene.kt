@@ -58,7 +58,7 @@ fun HomeScene(args: Route.HomeScene, onClick: (Route) -> Unit) {
     }
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO){
-            airtableDb.getCheckedApp("?fields=Date&fields=c&maxRecords=2").collect {response->
+            airtableDb.getCheckedApp("Apps?view=checkedToday&fields%5B%5D=c").collect {response->
                 response.fold(
                     onSuccess = {
                     },
